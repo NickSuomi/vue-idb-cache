@@ -15,10 +15,10 @@ import { computed } from 'vue'
 import { visible, message, type, ToastType } from '../composables/toast'
 
 const toastClasses = computed<Record<ToastType, string>>(() => ({
-  success: 'bg-green-300',
-  error: 'bg-red-300',
-  warning: 'bg-yellow-300',
-  info: 'bg-blue-300',
+  success: 'bg-green-600',
+  error: 'bg-red-600',
+  warning: 'bg-yellow-600',
+  info: 'bg-blue-600',
 }))
 </script>
 

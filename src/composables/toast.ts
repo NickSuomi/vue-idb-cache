@@ -12,5 +12,5 @@ export const showToast = (msg: string, toastType: ToastType) => {
   visible.value = true
   setTimeout(() => {
     visible.value = false
-  }, 3000)
+  }, 5000)
 }
