@@ -2,21 +2,23 @@
   <div class="container mx-auto p-4">
     <h1 class="text-3xl font-bold mb-4">Image Gallery</h1>
     <h3 class="text-xl mb-4">{{ `Count is: ${images.length}` }}</h3>
-    <div class="flex space-x-4 mb-4">
+    <div class="flex justify-center mb-4 space-x-4">
       <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         @click="handleFetchImages"
       >
         Fetch Images
       </button>
+
       <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         @click="handleLoadCachedImages"
       >
         Load Cached Images
       </button>
+
       <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         @click="handleClearCache"
       >
         Clear Cache
@@ -29,7 +31,7 @@
 
     <div
       v-if="images.length"
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2"
     >
       <div
         v-for="(image, index) in images"
