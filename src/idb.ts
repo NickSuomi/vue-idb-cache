@@ -36,3 +36,10 @@ export const deleteCachedImage = async (url: string) => {
   const db = await dbPromise
   await db.delete('images', url)
 }
+
+export const clearAllCachedImages = async () => {
+  const db = await dbPromise
+  const tx = db.transaction('images', 'readwrite')
+  const store = tx.objectStore('images')
+  await store.clear()
+}

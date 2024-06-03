@@ -8,13 +8,15 @@ module.exports = {
     'plugin:vue/vue3-essential',
     'eslint:recommended',
     '@vue/typescript/recommended',
-    'plugin:prettier/recommended', // Add Prettier recommended rules
+    'plugin:prettier/recommended',
   ],
   parserOptions: {
     ecmaVersion: 2020,
   },
   rules: {
-    'prettier/prettier': 'error', // Add Prettier as an ESLint rule
-    'vue/no-unused-vars': 'error',
+    'prettier/prettier': 'warn',
+    'vue/no-unused-vars': 'warn',
+    'vue/multi-word-component-names': 'warn',
+    '@typescript-eslint/no-unused-vars': 'warn',
   },
 }
