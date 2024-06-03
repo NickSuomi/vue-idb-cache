@@ -33,7 +33,6 @@ export const useImageCache = (): ImageCache => {
 
   const fetchImages = async () => {
     const response = await axios.get(API_URL)
-    console.log(response.data) // Log the response data
     const imageUrls = response.data.map(
       (img: { urls: { full: string } }) => img.urls.full,
     )
