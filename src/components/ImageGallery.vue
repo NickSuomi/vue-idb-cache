@@ -3,30 +3,24 @@
     <h1 class="text-3xl font-bold mb-4">Image Gallery</h1>
     <h3 class="text-xl mb-4">{{ `Count is: ${images.length}` }}</h3>
     <div class="flex justify-center mb-4 space-x-4">
-      <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      <LoadingButton
+        :text="'Fetch Images'"
+        :loadingText="'Fetching...'"
+        :loading="loadingFetch"
         @click="handleFetchImages"
-      >
-        Fetch Images
-      </button>
-
-      <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      />
+      <LoadingButton
+        :text="'Load Cached Images'"
+        :loadingText="'Loading...'"
+        :loading="loadingLoadCache"
         @click="handleLoadCachedImages"
-      >
-        Load Cached Images
-      </button>
-
-      <button
-        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      />
+      <LoadingButton
+        :text="'Clear Cache'"
+        :loadingText="'Clearing...'"
+        :loading="loadingClearCache"
         @click="handleClearCache"
-      >
-        Clear Cache
-      </button>
-    </div>
-
-    <div v-if="loading" class="text-center">
-      <Spinner />
+      />
     </div>
 
     <div
@@ -36,7 +30,7 @@
       <div
         v-for="(image, index) in images"
         :key="index"
-        class="overflow-hidden rounded-lg shadow-lg"
+        class="overflow-hidden rounded-sm"
       >
         <img
           :src="getObjectURL(image)"
@@ -44,6 +38,7 @@
         />
       </div>
     </div>
+
     <Toast />
   </div>
 </template>
@@ -52,61 +47,63 @@
 import { ref, onMounted } from 'vue'
 import { useImageCache } from '../composables/useImageCache'
 import Toast from './Toast.vue'
-import Spinner from './Spinner.vue'
+import LoadingButton from './LoadingButton.vue'
 import { showToast } from '../composables/toast'
 
 const { images, fetchImages, loadCachedImages, clearCache } = useImageCache()
 const error = ref<string | null>(null)
-const loading = ref<boolean>(false)
+const loadingFetch = ref<boolean>(false)
+const loadingLoadCache = ref<boolean>(false)
+const loadingClearCache = ref<boolean>(false)
 
 const getObjectURL = (image: Blob): string => {
   return URL.createObjectURL(image)
 }
 
 const handleFetchImages = async () => {
-  loading.value = true
+  loadingFetch.value = true
   try {
     await fetchImages()
-    showToast('Images fetched successfully')
+    showToast('Images fetched successfully', 'success')
     error.value = null
   } catch (e) {
     error.value = 'Failed to fetch images'
-    showToast(error.value)
+    showToast(error.value, 'error')
   } finally {
-    loading.value = false
+    loadingFetch.value = false
   }
 }
 
 const handleLoadCachedImages = async () => {
-  loading.value = true
+  loadingLoadCache.value = true
   try {
     await loadCachedImages()
-    showToast('Cached images loaded')
+    showToast('Cached images loaded', 'info')
     error.value = null
   } catch (e) {
     error.value = 'No cached images found'
-    showToast(error.value)
+    showToast(error.value, 'warning')
   } finally {
-    loading.value = false
+    loadingLoadCache.value = false
   }
 }
 
 const handleClearCache = async () => {
-  loading.value = true
+  loadingClearCache.value = true
   try {
     await clearCache()
-    showToast('Cache cleared')
+    showToast('Cache cleared', 'success')
     error.value = null
   } catch (e) {
     error.value = 'Failed to clear cache'
-    showToast(error.value)
+    showToast(error.value, 'error')
   } finally {
-    loading.value = false
+    loadingClearCache.value = false
   }
 }
 
 onMounted(async () => {
-  loading.value = true
+  loadingLoadCache.value = true
   try {
     await loadCachedImages()
     if (images.value.length === 0) {
@@ -114,15 +111,11 @@ onMounted(async () => {
     }
   } catch (e) {
     error.value = 'Error loading images'
-    showToast(error.value)
+    showToast(error.value, 'error')
   } finally {
-    loading.value = false
+    loadingLoadCache.value = false
   }
 })
 </script>
 
-<style scoped>
-.error {
-  @apply bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4;
-}
-</style>
+<style scoped></style>
