@@ -1,11 +1,20 @@
-import { ref } from 'vue'
+import { ref, Ref } from 'vue'
 import axios from 'axios'
-import { getCachedImage, setCachedImage } from '../idb'
-import { ImageData } from '../types'
+import { getCachedImage, setCachedImage, getAllCachedImages } from '../idb' // Add getAllCachedImages function
 
-const API_URL = '/api/photos'
+const API_URL = `https://api.unsplash.com/photos/random?client_id=${import.meta.env.VITE_UNSPLASH_ACCESS_KEY}&count=3`
 
-export const useImageCache = () => {
+interface ImageCache {
+  images: Ref<Blob[]>
+  fetchImages: () => Promise<void>
+  loadCachedImages: () => Promise<void>
+}
+
+let instance: ImageCache | null = null
+
+export const useImageCache = (): ImageCache => {
+  if (instance) return instance
+
   const images = ref<Blob[]>([])
 
   const fetchImage = async (url: string) => {
@@ -23,15 +32,25 @@ export const useImageCache = () => {
   }
 
   const fetchImages = async () => {
-    const response = await axios.get<ImageData[]>(API_URL)
+    const response = await axios.get(API_URL)
     console.log(response.data) // Log the response data
-    const imageUrls = response.data.slice(0, 3).map((img) => img.url)
+    const imageUrls = response.data.map(
+      (img: { urls: { full: string } }) => img.urls.full,
+    )
 
     images.value = await Promise.all(imageUrls.map(fetchImage))
   }
 
-  return {
+  const loadCachedImages = async () => {
+    const cachedImages = await getAllCachedImages()
+    images.value = cachedImages
+  }
+
+  instance = {
     images,
     fetchImages,
+    loadCachedImages,
   }
+
+  return instance
 }

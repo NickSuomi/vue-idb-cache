@@ -13,19 +13,27 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue'
+import { onMounted } from 'vue'
 import { useImageCache } from '../composables/useImageCache'
-// import { ImageData } from '../types'
 
-const { images, fetchImages } = useImageCache()
+const { images, fetchImages, loadCachedImages } = useImageCache()
 
 const getObjectURL = (image: Blob): string => {
   return URL.createObjectURL(image)
 }
 
-// Watch the images array to log changes
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-watch(images, (newImages: any) => {
-  console.log('Images updated:', newImages)
+onMounted(async () => {
+  await loadCachedImages()
+  if (images.value.length === 0) {
+    await fetchImages()
+  }
 })
 </script>
+
+<style scoped>
+img {
+  width: 50%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+</style>
