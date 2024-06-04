@@ -1,1 +1,1 @@
-npm run ready
+npm run ready && npm run check-sensitive-data
